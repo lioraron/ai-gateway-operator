@@ -58,14 +58,8 @@ fetch_component() {
     echo "[${component_name}] Manifests ready at ${dst_manifests_dir}"
 }
 
-# TODO: remove once quay.io/opendatahub/odh-batch-gateway-operator is published
-patch_batchgateway_image() {
-    local dst="$1"
-    sed -i.bak 's|BATCH_GATEWAY_OPERATOR_IMAGE=.*|BATCH_GATEWAY_OPERATOR_IMAGE=ghcr.io/opendatahub-io/batch-gateway-operator:main|' \
-        "${dst}/base/params.env"
-    rm -f "${dst}/base/params.env.bak"
-}
-
 # Update batchgateway manifests, change the commit SHA below and run: make get-manifests
-fetch_component "batchgateway" "llm-d-batch-gateway-operator" "config" "75286a071268b91db9904f8eeba19b6daa6250d4" ""
-patch_batchgateway_image "${PROJECT_ROOT}/config/manifests/batchgateway"
+
+# https://github.com/opendatahub-io/llm-d-batch-gateway-operator/commits/
+# https://github.com/red-hat-data-services/llm-d-batch-gateway-operator/commits
+fetch_component "batchgateway" "llm-d-batch-gateway-operator" "config" "ccb0f443d67c1e988c468c6787aad4a4c8c41157" "554d9416f5112da85f99a407c7d33d257175e550"
