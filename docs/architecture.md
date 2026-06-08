@@ -2,7 +2,7 @@
 
 This document describes how **ai-gateway-operator** (the AI Gateway module operator) manages its sub-components — fetching their manifests, deploying their operators, and aggregating their status onto the `AIGateway` CR.
 
-For how this operator integrates with the ODH platform operator (DataScienceCluster, Helm chart packaging, status roll-up to the DSC), see [integration-opendatahub-operator.md](integration-opendatahub-operator.md).
+For how this operator integrates with the ODH platform operator (DataScienceCluster, manifest packaging, status roll-up to the DSC), see [integration-opendatahub-operator.md](integration-opendatahub-operator.md).
 
 ## 1. Overview
 
@@ -55,11 +55,15 @@ Each sub-component operator (e.g. batch-gateway-operator) lives in its own midst
 - At build time, `Containerfile` copies these manifests into the container image at `/manifests/` for the controller to use at runtime.
 - To upgrade a sub-component, update the SHA in `get-manifests.sh`, re-run `make get-manifests`, and commit the result.
 
-### 2.3 ai-gateway-operator generates RBAC and Helm chart
+### 2.3 ai-gateway-operator generates its own deploy manifests
 
 `make manifests` generates `config/rbac/role.yaml` from kubebuilder RBAC markers in `aigateway_controller.go`. These markers must include permissions for all sub-component workloads (RBAC escalation).
 
-`make helm` (`cmd/chartgen`) reads the kustomize overlay (`config/default/`) and picks up `config/rbac/role.yaml`, CRDs, Deployment, ConfigMap, etc. The output is written to `config/chart/` and must be committed to git. This chart is what opendatahub-operator consumes to deploy this operator — see [integration-opendatahub-operator.md](integration-opendatahub-operator.md).
+The operator's own deploy manifests (CRD, RBAC, Deployment, ConfigMap, metrics Service) live as a kustomize tree under `config/`. Two consumers render it:
+- **Local/dev:** `make deploy` builds `config/default/` and applies it to the cluster.
+- **opendatahub-operator:** consumes the platform overlay `config/manifests/ai-gateway-operator/overlays/{odh,rhoai}`. The operator image is parameterized via `config/manifests/ai-gateway-operator/base/params.env` (`AI_GATEWAY_OPERATOR_IMAGE`), which opendatahub-operator substitutes at deploy time. See [integration-opendatahub-operator.md](integration-opendatahub-operator.md).
+
+Both reuse the same `config/crd`, `config/rbac`, and `config/manager`, so the deploy manifests never drift from `make manifests` output.
 
 ## 3. Reconciliation flow
 

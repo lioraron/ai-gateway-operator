@@ -35,9 +35,10 @@ import (
 	"github.com/opendatahub-io/opendatahub-operator/v2/pkg/controller/actions/status/releases"
 	"github.com/opendatahub-io/opendatahub-operator/v2/pkg/controller/predicates"
 	"github.com/opendatahub-io/opendatahub-operator/v2/pkg/controller/reconciler"
-	"github.com/opendatahub-io/opendatahub-operator/v2/pkg/controller/status"
 	"github.com/opendatahub-io/opendatahub-operator/v2/pkg/metadata/labels"
 )
+
+const conditionDeploymentsAvailable = "DeploymentsAvailable"  // TODO: need operator export this wait for https://github.com/opendatahub-io/opendatahub-operator/pull/3624
 
 // Module operator's own CRD
 // +kubebuilder:rbac:groups=components.platform.opendatahub.io,resources=aigateways,verbs=get;list;watch;create;update;patch;delete
@@ -100,7 +101,7 @@ func NewReconciler(
 			gc.InNamespace(cfg.ApplicationsNamespace),
 		)).
 		WithConditions(
-			status.ConditionDeploymentsAvailable,
+			conditionDeploymentsAvailable,
 		).
 		Build(ctx)
 

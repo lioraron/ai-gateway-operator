@@ -3,6 +3,7 @@ namespace: ai-gateway-system
 namePrefix: ai-gateway-
 
 resources:
+- namespace.yaml
 - ../crd
 - ../rbac
 - ../manager

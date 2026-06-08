@@ -22,7 +22,6 @@ import (
 	"github.com/spf13/cobra"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/opendatahub-io/ai-gateway-operator/cmd/chartgen"
 	"github.com/opendatahub-io/ai-gateway-operator/cmd/operator"
 )
 
@@ -35,7 +34,6 @@ func main() {
 	}
 
 	root.AddCommand(operator.NewCommand())
-	root.AddCommand(chartgen.NewCommand())
 
 	if err := root.ExecuteContext(ctrl.SetupSignalHandler()); err != nil {
 		os.Exit(1)

@@ -22,7 +22,3 @@ func IntegrationTestNamespace() string {
 
 	return DefaultIntegrationTestNamespace
 }
-
-func HelmNamespace() string {
-	return OperatorNamespace()
-}

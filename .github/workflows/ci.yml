@@ -93,9 +93,6 @@ jobs:
           make container-build IMG=${{ steps.img.outputs.img }}
           make container-push IMG=${{ steps.img.outputs.img }}
 
-      - name: Generate Helm chart
-        run: make helm
-
       - name: Run E2E tests
         run: make test-e2e IMG=${{ steps.img.outputs.img }}
 
