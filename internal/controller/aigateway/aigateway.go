@@ -100,7 +100,7 @@ func NewModule(cfg *moduleconfig.Config) (*Module, error) {
 	}
 
 	maasSourcePath := "base"
-	if cfg.PlatformType == "XKS" {
+	if cfg.PlatformType == string(cluster.XKS) {
 		maasSourcePath = "overlays/xks"
 	}
 

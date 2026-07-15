@@ -63,20 +63,3 @@ patches:
       - op: remove
         path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
 
-  # Mount the webhook TLS secret (cert-manager handles TLS on xKS)
-  - target:
-      kind: Deployment
-      name: maas-controller
-    patch: |
-      - op: add
-        path: /spec/template/spec/volumes
-        value:
-          - name: webhook-certs
-            secret:
-              secretName: maas-controller-webhook-cert
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts
-        value:
-          - name: webhook-certs
-            mountPath: /tmp/k8s-webhook-server/serving-certs
-            readOnly: true
